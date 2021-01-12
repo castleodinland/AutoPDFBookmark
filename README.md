@@ -1,9 +1,10 @@
 # AutoPDFBookmark
+## Background
 [Markdown PDF](https://github.com/yzane/vscode-markdown-pdf) is great but it doesn't provide bookmarks
 so here's a python script to Generate bookmark(outline) according to the CSS file given
 
 ## how to use
-* specify the CSS for `Markdown PDF' like this:
+* specify the CSS for `Markdown PDF` like this:
 ```
 "markdown-pdf.styles": [
     "markdownhere.css"
