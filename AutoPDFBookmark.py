@@ -40,7 +40,7 @@ here we use Markdown PDF on vscode running 'Export(pdf)'
 !!! the 'font-size' in body CANNOT equal to the h1,h2,h3... styles, else will encount error
 '''
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 __author__ = 'Castle'
 __email__ = 'castleodinland@gmail.com'
 __license__ = 'GPL'
@@ -53,7 +53,11 @@ re_head_title = r'h(\d+)'
 pdf_input_name = 'mypdf.pdf'
 css_input_name = 'markdownhere.css'
 
+# the bmk_level should start from 1, if not, filter it.
+has_main_title = 0
+
 def usage():
+    print ("AutoPDFBookmark version : %s"%(__version__))
     print ("\nThis is the usage function")
     print ('Usage:')
     print ('-f, --pdf []: specify the input .pdf file name, mypdf.pdf as default')
@@ -100,7 +104,7 @@ if __name__ == '__main__':
     if toc:
         print('the file has toc.')
         os._exit(1)
-   
+
     # for pages in doc:
     for page_num, page in enumerate(doc, 1):
         text_page = page.getTextPage()
@@ -109,6 +113,7 @@ if __name__ == '__main__':
 
         for one_block in blocks:
             context = one_block['lines'][0]['spans'][0]
+            # print (context)
             if context['flags'] == 0:
                 for key,values in  css_list.items():
                     pattern = re.compile(re_head_title)
@@ -119,11 +124,14 @@ if __name__ == '__main__':
                             pattern = re.compile(re_font_size)
                             match_obj = pattern.match(values['font-size']) #only support pt for font-size
                             if match_obj and int(match_obj.group(1)) == int(context['size']):
-                                print(context['text'])
+                                # print(context['text'])
                                 line_local = context['bbox'][1]
                                 point = fitz.Point(0, float(line_local))
+                                if has_main_title == 0 and bmk_level != 1:
+                                    continue
+                                elif has_main_title == 0:
+                                    has_main_title = 1
                                 toc.append([bmk_level, context['text'], page_num, {'kind':fitz.LINK_GOTO, 'to':point, 'collapse':1}])
-
 
     doc.set_toc(toc)
     pdf_input_name_new = pdf_input_name.rsplit(".", 1)[0] + '_new' + '.pdf'
