@@ -108,9 +108,7 @@ if __name__ == '__main__':
 
     # for pages in doc:
     for page_num, page in enumerate(doc, 1):
-        text_page = page.getTextPage()
-        text_page_dict = text_page.extractDICT()
-        blocks = text_page_dict['blocks']
+        blocks = page.get_text("dict", flags=11)["blocks"]
 
         for one_block in blocks:
             context = one_block['lines'][0]['spans'][0]
