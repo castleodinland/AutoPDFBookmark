@@ -49,6 +49,7 @@ css_list = [] #[selector, {xxx1:yyy1, xxx2:yyy2, ...}]
 
 re_font_size = r'(\d+)pt'
 re_head_title = r'h(\d+)'
+re_chapter_code = r'(\d+\.\d+\.\d+)|(\d+\.\d+)|(\d+\.)'
 
 pdf_input_name = 'mypdf.pdf'
 css_input_name = 'markdownhere.css'
@@ -124,7 +125,11 @@ if __name__ == '__main__':
                             pattern = re.compile(re_font_size)
                             match_obj = pattern.match(values['font-size']) #only support pt for font-size
                             if match_obj and int(match_obj.group(1)) == int(context['size']):
-                                # print(context['text'])
+                                pt1 = re.compile(re_chapter_code)
+                                mo = pt1.match(context['text'])
+                                if mo == None:
+                                    continue
+                                print(context['text'])
                                 line_local = context['bbox'][1]
                                 point = fitz.Point(0, float(line_local))
                                 if has_main_title == 0 and bmk_level != 1:
